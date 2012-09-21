@@ -1,0 +1,89 @@
+import os
+import jinja2
+import cgi,re
+import webapp2
+
+
+jinja_environment = jinja2.Environment(autoescape=True,
+                                       loader=jinja2.FileSystemLoader(os.path.join(os.path.dirname(__file__),'templates')))
+
+
+
+class MainPage(webapp2.RequestHandler):
+  def write_form(self,error_name='',error_password='',error_verify='',error_email=''):
+    name = self.request.get('username')
+    password = self.request.get('password')
+    verify = self.request.get('verify')
+    email = self.request.get('email')
+    
+    if name or verify or password:
+      error_name = valid_username(name)
+      error_password=valid_password(password)
+      error_verify = valid_verify(verify,password)
+      
+    if email:
+      error_email = valid_email(email)
+    else:
+      email=''
+      
+    if (error_name or error_password or error_verify or error_email):
+      self.response.out.write(form%{'error_username':error_name,
+                                    'error_password':error_password,
+                                    'error_verify':error_verify,
+                                    'error_email':error_email,
+                                    'username':name,
+                                    'email':email})
+    else:
+      self.redirect('/welcome?q=%s'%name)
+                                    
+  def get(self):
+    self.response.headers['Content-Type']='text/html'
+    self.response.out.write(form%{'username':'','email':'',
+                                  'error_username':'','error_password':'',
+                                  'error_verify':'','error_email':''})
+  def post(self):
+    self.response.headers['Content-Type']='text/html'
+    self.write_form()
+    
+class Welcome(webapp2.RequestHandler):
+  def get(self):
+    q=self.request.get('q')
+    self.response.out.write('Welcome, '+str(q))    
+      
+      
+class MainPage2(webapp2.RequestHandler):
+  def get(self):
+    template_values={}
+    template = jinja_environment.get_template('flame.html')
+    self.response.out.write(template.render(template_values))
+                               
+app = webapp2.WSGIApplication(
+[('/',MainPage2),('/welcome',Welcome)],debug = True
+)
+
+def valid_username(name):
+  USER_RE = re.compile(r"^[a-zA-Z0-9_-]{3,20}$")
+  if USER_RE.match(name):
+    return ''
+  else:
+    return "That's not a valid username."
+
+def valid_password(name):
+  USER_RE = re.compile(r"^.{3,20}$")
+  if USER_RE.match(name):
+    return ''
+  else:
+    return "That wasn't a valid password."
+    
+def valid_verify(a,b):
+  if not a == b :
+    return "Passwords do not match"
+  else:
+    return ''
+
+def valid_email(name):
+  USER_RE = re.compile(r"^[\S]+@[\S]+\.[\S]+$")
+  if USER_RE.match(name):
+    return ''
+  else:
+    return "That wasn't a valid email."             

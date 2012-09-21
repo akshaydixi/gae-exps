@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Signup</title>
+</head>
+
+<body>
+<h2>Signup</h2>
+<br>
+<form method = 'post'>
+
+<label>Username       
+<input type='text' name='username'>
+%(error_username)s
+</label>
+<br>
+<label>Password       
+<input type='password' name='password'>
+%(error_password)s
+</label>
+<br>
+<label>Verify Password
+<input type='password' name='verify'>
+%(error_verify)s
+</label>
+<br>
+<label>Email(optional)
+<input type='text' name='email'>
+%(error_email)s
+</label>
+<br>
+<input type='submit'>
+</form>
+</body>
+</html>

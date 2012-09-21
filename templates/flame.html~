@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>
+My Flame v1.0
+</title>
+
+</head>
+<body>
+
+<canvas id='canvas'></canvas>
+<style >
+* {margin: 0; padding: 0;}
+#canvas {display: block;}
+</style>
+<script src='flame.js'>
+</script>
+
+</style>
+</body>
+</html>
